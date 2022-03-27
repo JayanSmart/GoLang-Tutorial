@@ -1,0 +1,294 @@
+{
+	"info": {
+		"_postman_id": "8a6b36fb-99b2-49eb-ba45-197ae3868b1b",
+		"name": "bookstore-api",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "CreateBook",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var schema = {",
+							"    \"id\": {",
+							"        \"type\": \"integer\"",
+							"    },",
+							"    \"title\": {",
+							"        \"type\": \"string\"",
+							"    },",
+							"    \"author\": {",
+							"        \"type\": \"string\"",
+							"    }",
+							"};",
+							"",
+							"var jsonData = pm.response.json().data;",
+							"",
+							"pm.test('Schema is valid', function () {",
+							"    pm.expect(tv4.validate(jsonData, schema)).to.be.true;",
+							"});",
+							"",
+							"pm.globals.set(\"new_id\", jsonData.id);",
+							"pm.globals.set(\"new_author\", jsonData.author);",
+							"pm.globals.set(\"new_title\", jsonData.title);",
+							"",
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"title\": \"{{$randomLoremWords}}\",\n    \"author\": \"{{$randomFullName}}\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{URL}}/books",
+					"host": [
+						"{{URL}}"
+					],
+					"path": [
+						"books"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GetBookById",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var schema = {",
+							"    \"id\": {",
+							"        \"type\": \"integer\"",
+							"    },",
+							"    \"title\": {",
+							"        \"type\": \"string\"",
+							"    },",
+							"    \"author\": {",
+							"        \"type\": \"string\"",
+							"    }",
+							"};",
+							"",
+							"var jsonData = pm.response.json().data;",
+							"",
+							"pm.test('Schema is valid', function () {",
+							"    pm.expect(tv4.validate(jsonData, schema)).to.be.true;",
+							"});",
+							"",
+							"pm.test('Data is correct'), function() {",
+							"    pm.expect(jsonData.author).to.eq(new_author, \"Author does not match\")",
+							"    pm.expect(jsonData.title).to.eq(new_title, \"Title does not match\")",
+							"}"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{URL}}/books/{{new_id}}",
+					"host": [
+						"{{URL}}"
+					],
+					"path": [
+						"books",
+						"{{new_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GetAllBooks",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var schema = {",
+							"    \"id\": {",
+							"        \"type\": \"integer\"",
+							"    },",
+							"    \"title\": {",
+							"        \"type\": \"string\"",
+							"    },",
+							"    \"author\": {",
+							"        \"type\": \"string\"",
+							"    }",
+							"};",
+							"",
+							"var jsonData = pm.response.json().data;",
+							"",
+							"console.log(jsonData)",
+							"",
+							"for (const data in jsonData) {",
+							"    console.log(jsonData)",
+							"    pm.test('Schema is valid for id: ' + data, function () {",
+							"            pm.expect(tv4.validate(data, schema)).to.be.true;",
+							"    });",
+							"",
+							"    pm.test('Data is correct'), function() {",
+							"        pm.expect(jsonData.author).to.eq(new_author, \"Author does not match\")",
+							"        pm.expect(jsonData.title).to.eq(new_title, \"Title does not match\")",
+							"    }",
+							"}"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{URL}}/books",
+					"host": [
+						"{{URL}}"
+					],
+					"path": [
+						"books"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "UpdateBook",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var schema = {",
+							"    \"id\": {",
+							"        \"type\": \"integer\"",
+							"    },",
+							"    \"title\": {",
+							"        \"type\": \"string\"",
+							"    },",
+							"    \"author\": {",
+							"        \"type\": \"string\"",
+							"    }",
+							"};",
+							"",
+							"var jsonData = pm.response.json().data;",
+							"",
+							"pm.test('Schema is valid', function () {",
+							"    pm.expect(tv4.validate(jsonData, schema)).to.be.true;",
+							"});",
+							"",
+							"pm.test(\"Autor has updated\"), function() {",
+							"    pm.expect(jsonData.id).to.eq(new_id, \"id has been updated erroniously\");",
+							"    pm.expect(jsonData.id).to.not.eq(new_author, \"author has now been updated\");",
+							"    pm.expect(jsonData.id).to.eq(new_title, \"title has been updated erroniously\")",
+							"}",
+							"",
+							"pm.globals.set(\"new_author\", jsonData.author);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PATCH",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"author\": \"{{$randomFullName}}\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{URL}}/books/{{new_id}}",
+					"host": [
+						"{{URL}}"
+					],
+					"path": [
+						"books",
+						"{{new_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "DeleteBook",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{URL}}/books/{{new_id}}",
+					"host": [
+						"{{URL}}"
+					],
+					"path": [
+						"books",
+						"{{new_id}}"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					"pm.test(\"Status test\", function () {",
+					"    pm.response.to.have.status(200);",
+					"});",
+					"",
+					"pm.test(\"Content-Type is present\", function () {",
+					"    pm.response.to.have.header(\"Content-Type\");",
+					"});",
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "URL",
+			"value": "0.0.0.0:8080"
+		}
+	]
+}
